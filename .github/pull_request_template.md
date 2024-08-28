@@ -1,4 +1,4 @@
-closes #\<insert issue number here\>
+closes #<insert issue number here>
 
 ## Checklist
 
@@ -9,6 +9,6 @@ closes #\<insert issue number here\>
 
 -
 
-## How to test (if aplicable)
+## How to test (if applicable)
 
 -

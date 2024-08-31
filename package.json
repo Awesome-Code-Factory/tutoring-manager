@@ -11,7 +11,7 @@
     "lint": "npx eslint",
     "pretest": "bun format-check && bun lint",
     "test": "echo \"I pretend that test exitsts here\"",
-    "posttest": "tsc **/*.test.ts"
+    "posttest": "tsc --project tsconfig.test.json"
   },
   "dependencies": {
     "babel-plugin-react-compiler": "^0.0.0-experimental-e68eda9-20240829",

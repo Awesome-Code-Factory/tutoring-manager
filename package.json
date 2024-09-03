@@ -6,21 +6,41 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "format-check": "prettier . --check",
+    "format": "prettier . --write",
+    "lint": "npx eslint",
+    "pretest": "bun format-check && bun lint",
+    "test": "echo \"I pretend that test exitsts here\"",
+    "posttest": "tsc --project tsconfig.test.json"
   },
   "dependencies": {
-    "react": "^18",
-    "react-dom": "^18",
-    "next": "14.2.7"
+    "babel-plugin-react-compiler": "^0.0.0-experimental-e68eda9-20240829",
+    "next": "^15.0.0-rc.0",
+    "react": "^19.0.0-rc-a19a8ab4-20240829",
+    "react-dom": "^19.0.0-rc-a19a8ab4-20240829"
   },
   "devDependencies": {
-    "typescript": "^5",
+    "@eslint/compat": "^1.1.1",
+    "@eslint/js": "^9.9.1",
+    "@total-typescript/ts-reset": "^0.6.0",
+    "@total-typescript/tsconfig": "^1.0.4",
+    "@types/eslint__js": "^8.42.3",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@typescript-eslint/eslint-plugin": "^8.3.0",
+    "@typescript-eslint/parser": "^8.3.0",
+    "eslint": "^9.9.1",
+    "eslint-config-next": "14.2.7",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-react": "^7.35.0",
+    "eslint-plugin-react-compiler": "^0.0.0-experimental-0924e7a-20240827",
+    "eslint-plugin-react-hooks": "^4.6.2",
     "postcss": "^8",
+    "prettier": "^3.3.3",
+    "prettier-plugin-tailwindcss": "^0.6.6",
     "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "14.2.7"
+    "typescript": "^5.5.4",
+    "typescript-eslint": "^8.3.0"
   }
 }

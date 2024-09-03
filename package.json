@@ -41,6 +41,7 @@
     "eslint-plugin-react-compiler": "^0.0.0-experimental-0924e7a-20240827",
     "eslint-plugin-react-hooks": "^4.6.2",
     "postcss": "^8",
+    "prettier-plugin-tailwindcss": "^0.6.6",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.5.4",
     "typescript-eslint": "^8.3.0"

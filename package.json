@@ -14,25 +14,25 @@
     "posttest": "tsc --project tsconfig.test.json"
   },
   "dependencies": {
+    "@neondatabase/serverless": "^0.9.5",
     "@radix-ui/react-avatar": "^1.1.0",
     "@radix-ui/react-dropdown-menu": "^2.1.1",
     "@radix-ui/react-slot": "^1.1.0",
-    "@neondatabase/serverless": "^0.9.5",
-    "babel-plugin-react-compiler": "^0.0.0-experimental-4e0eccf-20240830",
+    "babel-plugin-react-compiler": "^0.0.0-experimental-7449567-20240904",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
-    "lucide-react": "^0.436.0",
     "drizzle-orm": "^0.33.0",
+    "lucide-react": "^0.436.0",
     "next": "^15.0.0-canary.139",
     "next-themes": "^0.3.0",
     "pg": "^8.12.0",
     "postgres": "^3.4.4",
     "react": "^19.0.0-rc-a19a8ab4-20240829",
     "react-dom": "^19.0.0-rc-a19a8ab4-20240829",
-    "zod": "^3.23.8",
     "sonner": "^1.5.0",
     "tailwind-merge": "^2.5.2",
-    "tailwindcss-animate": "^1.0.7"
+    "tailwindcss-animate": "^1.0.7",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@eslint/compat": "^1.1.1",

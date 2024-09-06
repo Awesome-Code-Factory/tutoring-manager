@@ -53,5 +53,11 @@ export default [
       eqeqeq: "error",
     },
   },
+  {
+    files: ["src/components/ui/**/*"],
+    rules: {
+      "react/prop-types": "off",
+    },
+  },
   prettierEslintConfig,
 ];

@@ -6,6 +6,8 @@
     "bradlc.vscode-tailwindcss",
     "vitest.explorer",
     "eamodio.gitlens",
-    "github.vscode-pull-request-github"
+    "github.vscode-pull-request-github",
+    "aeschli.vscode-css-formatter",
+    "oven.bun-vscode"
   ]
 }

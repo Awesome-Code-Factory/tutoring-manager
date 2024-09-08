@@ -46,3 +46,29 @@ bun run build
 ```bash
 bun run start
 ```
+
+## Database
+
+### Drizzle Studio
+
+to fire up drizzle studio run:
+
+```bash
+bunx drizzle-kit studio
+```
+
+### Generating migration
+
+to generate a migration after schema changes
+
+```bash
+bunx drizzle-kit generate
+```
+
+### Migration
+
+to migrate all migrations run:
+
+```bash
+bunx drizzle-kit migrate
+```

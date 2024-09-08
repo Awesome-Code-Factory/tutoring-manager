@@ -1,6 +1,0 @@
-DB_HOST=b68eptxhwyfe91ygrx7t-postgresql.services.clever-cloud.com
-DB_NAME=b68eptxhwyfe91ygrx7t
-DB_USER=uqwcojxaorp9obradze2
-DB_PORT=50013
-DB_PASSWORD=yB624HwEChj2amkZsuq8wOGGwiO7PU
-DB_URI=postgresql://uqwcojxaorp9obradze2:yB624HwEChj2amkZsuq8wOGGwiO7PU@b68eptxhwyfe91ygrx7t-postgresql.services.clever-cloud.com:5432/b68eptxhwyfe91ygrx7t

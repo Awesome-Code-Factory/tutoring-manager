@@ -3,5 +3,9 @@
   "editor.formatOnSave": true,
   "eslint.useFlatConfig": true,
   "typescript.tsdk": "node_modules/typescript/lib",
-  "typescript.preferences.autoImportFileExcludePatterns": ["@radix-ui/*"]
+  "typescript.preferences.autoImportFileExcludePatterns": ["@radix-ui/*"],
+  "vitest.rootConfig": "vitest.config.ts",
+  "vitest.nodeEnv": {
+    "NODE_ENV": "test"
+  }
 }

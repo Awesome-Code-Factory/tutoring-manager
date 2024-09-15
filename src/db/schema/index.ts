@@ -1,12 +1,6 @@
 import type { HashedPassword } from "@/auth/user";
 import type { Brand } from "@/type-utils/brand";
-import {
-  boolean,
-  pgTable,
-  serial,
-  timestamp,
-  varchar,
-} from "drizzle-orm/pg-core";
+import { boolean, pgTable, serial, varchar } from "drizzle-orm/pg-core";
 
 export type UserId = Brand<number, "userId">;
 

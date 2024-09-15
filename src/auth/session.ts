@@ -1,3 +1,5 @@
+import { authConfig } from "@/config/auth";
+import { getConfig } from "@/config/getter";
 import type { UserId } from "@/db/schema";
 import { InternalServerError } from "@/errors/server";
 import { Unauthorized } from "@/errors/unauthorized";
@@ -6,8 +8,11 @@ import { err, ok, ResultAsync } from "neverthrow";
 import { cookies } from "next/headers";
 import { z } from "zod";
 
-const secretKey = process.env.SESSION_SECRET;
-const encodedKey = new TextEncoder().encode(secretKey);
+const configResult = getConfig(authConfig);
+if (configResult.isErr()) throw configResult.error;
+
+const { sessionSecret } = configResult.value;
+const encodedKey = new TextEncoder().encode(sessionSecret);
 
 const payloadSchema = z.object({
   userId: z.number(),
@@ -30,9 +35,6 @@ const safeJwtVerify = ResultAsync.fromThrowable(
 );
 
 async function encrypt(payload: { userId: UserId; expiresAt: number }) {
-  if (!encodedKey.length) {
-    return err(new InternalServerError("no SESSION_SECRET detected!"));
-  }
   return ok(
     await new SignJWT(payload)
       .setProtectedHeader({ alg: "HS256" })
@@ -43,10 +45,6 @@ async function encrypt(payload: { userId: UserId; expiresAt: number }) {
 }
 
 export async function decrypt(session: string | undefined = "") {
-  if (!encodedKey.length) {
-    return err(new InternalServerError("no SESSION_SECRET detected!"));
-  }
-
   const verifyResult = await safeJwtVerify(session);
   if (verifyResult.isErr()) {
     return err(verifyResult.error);

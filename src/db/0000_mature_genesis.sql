@@ -7,6 +7,5 @@ CREATE TABLE IF NOT EXISTS "users" (
 	"last_name" varchar(50) NOT NULL,
 	"photo_url" varchar(200),
 	"color" varchar(6) NOT NULL,
-	"created_at" timestamp DEFAULT now(),
 	CONSTRAINT "users_email_unique" UNIQUE("email")
 );

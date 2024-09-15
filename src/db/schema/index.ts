@@ -1,10 +1,4 @@
-import {
-  boolean,
-  pgTable,
-  serial,
-  timestamp,
-  varchar,
-} from "drizzle-orm/pg-core";
+import { boolean, pgTable, serial, varchar } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -15,5 +9,4 @@ export const users = pgTable("users", {
   lastName: varchar("last_name", { length: 50 }).notNull(),
   photoUrl: varchar("photo_url", { length: 200 }),
   color: varchar("color", { length: 6 }).notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
 });

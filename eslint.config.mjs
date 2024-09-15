@@ -51,12 +51,19 @@ export default [
       "no-console": "warn",
       camelcase: "warn",
       eqeqeq: "error",
+      "no-process-env": "error",
     },
   },
   {
     files: ["src/components/ui/**/*"],
     rules: {
       "react/prop-types": "off",
+    },
+  },
+  {
+    files: ["src/config/**/*", "**/*.test.ts", "**/*.test.tsx"],
+    rules: {
+      "no-process-env": "off",
     },
   },
   prettierEslintConfig,

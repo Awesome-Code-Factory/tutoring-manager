@@ -9,9 +9,8 @@
     "format-check": "prettier . --check",
     "format": "prettier . --write",
     "lint": "npx eslint",
-    "pretest": "bun format-check && bun lint",
-    "test": "echo \"I pretend that test exitsts here\"",
-    "posttest": "tsc --project tsconfig.test.json"
+    "pretest": "bun format-check && bun lint && tsc --project tsconfig.test.json",
+    "test": "vitest"
   },
   "dependencies": {
     "@neondatabase/serverless": "^0.9.5",
@@ -36,16 +35,23 @@
   "devDependencies": {
     "@eslint/compat": "^1.1.1",
     "@eslint/js": "^9.9.1",
+    "@happy-dom/global-registrator": "^15.7.3",
     "@next/env": "^14.2.7",
+    "@testing-library/dom": "^10.4.0",
+    "@testing-library/jest-dom": "^6.5.0",
+    "@testing-library/react": "^16.0.1",
+    "@testing-library/user-event": "^14.5.2",
     "@total-typescript/ts-reset": "^0.6.0",
     "@total-typescript/tsconfig": "^1.0.4",
+    "@types/bun": "^1.1.8",
     "@types/eslint__js": "^8.42.3",
     "@types/node": "^20",
     "@types/pg": "^8.11.8",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "^18.3.5",
+    "@types/react-dom": "^18.3.0",
     "@typescript-eslint/eslint-plugin": "^8.3.0",
     "@typescript-eslint/parser": "^8.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
     "drizzle-kit": "^0.24.2",
     "eslint": "^9.9.1",
     "eslint-config-next": "14.2.7",
@@ -54,10 +60,13 @@
     "eslint-plugin-react": "^7.35.0",
     "eslint-plugin-react-compiler": "experimental",
     "eslint-plugin-react-hooks": "^4.6.2",
+    "jsdom": "^25.0.0",
     "postcss": "^8",
     "prettier-plugin-tailwindcss": "^0.6.6",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.5.4",
-    "typescript-eslint": "^8.3.0"
-  }
+    "typescript-eslint": "^8.3.0",
+    "vitest": "^2.0.5"
+  },
+  "type": "module"
 }

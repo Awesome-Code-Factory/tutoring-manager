@@ -6,7 +6,6 @@ import tsParser from "@typescript-eslint/parser";
 import js from "@eslint/js";
 import prettierEslintConfig from "eslint-config-prettier";
 import tseslint from "typescript-eslint";
-import neverthrowEslint from "eslint-plugin-neverthrow";
 
 import { includeIgnoreFile } from "@eslint/compat";
 import path from "node:path";
@@ -22,7 +21,6 @@ export default [
   ...tseslint.configs.strict,
   reactPlugin.configs.flat.recommended,
   reactPlugin.configs.flat["jsx-runtime"],
-  neverthrowEslint.configs.recommended,
 
   {
     plugins: {

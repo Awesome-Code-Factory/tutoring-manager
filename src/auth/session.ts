@@ -42,7 +42,7 @@ async function encrypt(payload: { userId: UserId; expiresAt: number }) {
   );
 }
 
-async function decrypt(session: string | undefined = "") {
+export async function decrypt(session: string | undefined = "") {
   if (!encodedKey.length) {
     return err(new InternalServerError("no SESSION_SECRET detected!"));
   }

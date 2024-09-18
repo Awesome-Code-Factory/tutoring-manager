@@ -7,7 +7,10 @@ import { Client } from "pg";
 const projectDir = process.cwd();
 loadEnvConfig(projectDir);
 
-const client = new Client(getConfig(dbCredentialsSchema));
+const config = getConfig(dbCredentialsSchema);
+if (config.isErr()) throw config.error;
+
+const client = new Client(config.value);
 
 await client.connect();
 

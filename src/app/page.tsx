@@ -1,6 +1,6 @@
 import { PreviewButton } from "@/components/preview-components";
 
-export default function Home() {
+export default async function Home() {
   return (
     <main className="mx-auto flex max-w-5xl flex-col gap-12 p-5">
       <section className="flex flex-col gap-4">
@@ -11,6 +11,7 @@ export default function Home() {
       </section>
       <section>
         <h2>Here is the main page</h2>
+
         <div>
           <p>this section shows h2 header with a paragraph</p>
           <p>This is purely to showcase shadcn/ui components</p>

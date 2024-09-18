@@ -1,18 +1,49 @@
+// @vitest-environment node
 import type { UserId } from "@/db/schema";
 import { describe, it, vi, expect } from "vitest";
 import { login } from "./login-action";
+import type { HashedPassword } from "@/auth/user";
+import * as navigation from "next/navigation";
+import * as headers from "next/headers";
+import { ok } from "neverthrow";
+import type { ReadonlyRequestCookies } from "next/dist/server/web/spec-extension/adapters/request-cookies";
 
-vi.mock("next/navigation", () => ({ redirect: vi.fn() }));
-vi.mock("@/auth/user", () => ({ comparePasswords: vi.fn() }));
-vi.mock("@/auth/session", () => ({ createSession: vi.fn() }));
-vi.mock("@/db/user/select", () => ({
-  getUser: vi.fn().mockResolvedValue({
-    id: 123 as UserId,
-    hashedPassword: "asdfiuhaweifuas",
+vi.mock("next/navigation");
+vi.mock("../../../db/user/select", () => ({
+  getUser: vi.fn().mockImplementation(async () => {
+    const { hashPassword } = await import("../../../auth/user");
+    return ok({
+      id: 1234 as UserId,
+      hashedPassword: (await hashPassword("P@ssw0rd")) as HashedPassword,
+    });
   }),
 }));
+vi.mock("next/headers");
 
-describe("login action", () => {
+describe("login action", async () => {
+  const redirect = vi.spyOn(navigation, "redirect");
+
+  const cookieSetter = vi.fn();
+  vi.spyOn(headers, "cookies").mockImplementation(
+    () =>
+      ({
+        set: cookieSetter,
+      }) as unknown as ReadonlyRequestCookies,
+  );
+
+  process.env.SESSION_SECRET = "totally secret";
+
+  it("should redirect if form is filled correctly", async () => {
+    const form = new FormData();
+    form.append("email", "john@doe.com");
+    form.append("password", "P@ssw0rd");
+    const result = await login(undefined, form);
+
+    expect(result).toBeUndefined();
+
+    expect(redirect).toHaveBeenCalled();
+  });
+
   describe("wrong form input", () => {
     it("should return errors for both fields if empty", async () => {
       const result = await login(undefined, new FormData());
@@ -42,24 +73,6 @@ describe("login action", () => {
       formData.append("email", "invalid email");
       const result = await login(undefined, formData);
       expect(result.errors.email).toContain("Please enter a valid email.");
-    });
-
-    it("should fail for invalid password", async () => {
-      const formData = new FormData();
-      formData.append("password", "invalid");
-      const result = await login(undefined, formData);
-      expect(result.errors.password).toContain("Be at least 8 characters long");
-      expect(result.errors.password).toContain("Contain at least one number.");
-      expect(result.errors.password).toContain(
-        "Contain at least one special character.",
-      );
-    });
-
-    it("should fail for only numerical password", async () => {
-      const formData = new FormData();
-      formData.append("password", "1234556798123987");
-      const result = await login(undefined, formData);
-      expect(result.errors.password).toContain("Contain at least one letter.");
     });
   });
 });

@@ -1,14 +1,18 @@
+"use server";
 import { LoginFormSchema, type FormState } from "./definitions";
 import { comparePasswords } from "@/auth/user";
-import { err, ok } from "neverthrow";
+import { err, ok, ResultAsync } from "neverthrow";
 import { WrongInput } from "@/errors/wrong-input";
 import { Unauthorized } from "@/errors/unauthorized";
 import { createSession } from "@/auth/session";
 import { redirect } from "next/navigation";
-import { getUser } from "@/db/user/select";
+import { db } from "@/db/db";
+import { eq } from "drizzle-orm";
+import { users } from "@/db/schema";
+import { InternalServerError } from "@/errors/server";
+import { NotFound } from "@/errors/not-found";
 
 export async function login(state: FormState, formData: FormData) {
-  "use server";
   const loginResult = await tryLogin(formData);
 
   if (loginResult.isErr()) {
@@ -18,9 +22,24 @@ export async function login(state: FormState, formData: FormData) {
         errors: error.fields,
       };
     }
+    if (error.code === 401) {
+      return {
+        errors: {
+          password: ["Incorrect password"],
+        },
+      };
+    }
+    if (error.code === 404) {
+      return {
+        errors: { email: ["this user does not exist"] },
+      };
+    }
 
     throw error;
   }
+  const redirectTo = formData.get("redirectTo") as string;
+  console.log("REDIRECT", redirectTo);
+  if (redirectTo) redirect(redirectTo);
 
   redirect("/dashboard");
 }
@@ -44,7 +63,7 @@ async function tryLogin(formData: FormData) {
   }
   const { value: user } = userResult;
 
-  if (!comparePasswords(password, user.hashedPassword)) {
+  if (!(await comparePasswords(password, user.hashedPassword))) {
     return err(new Unauthorized("Wrong password"));
   }
 
@@ -54,4 +73,35 @@ async function tryLogin(formData: FormData) {
   }
 
   return ok("user logged in!" as const);
+}
+
+async function getUser(email: string) {
+  const safeSelectFromDb = ResultAsync.fromThrowable(
+    () =>
+      db
+        .select({ id: users.id, hashedPassword: users.hashedPassword })
+        .from(users)
+        .where(eq(users.email, email)),
+    (error) => {
+      if (error instanceof Error) {
+        const newError = new InternalServerError(error.message);
+        newError.cause = error;
+        return newError;
+      }
+      return new InternalServerError("Database failed to respond");
+    },
+  );
+  const userList = await safeSelectFromDb();
+
+  if (userList.isErr()) {
+    return err(userList.error);
+  }
+
+  const user = userList.value[0];
+
+  if (!user) {
+    return err(new NotFound("No such user in database"));
+  }
+
+  return ok(user);
 }

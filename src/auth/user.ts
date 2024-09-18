@@ -1,6 +1,5 @@
 import type { Brand } from "@/type-utils/brand";
 import bcrypt from "bcrypt";
-import "server-only";
 
 export type HashedPassword = Brand<string, "hashed">;
 

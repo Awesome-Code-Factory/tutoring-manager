@@ -3,9 +3,12 @@
 import { useActionState } from "react";
 import { login } from "@/app/(auth)/login/login-action";
 import { SubmitButton } from "@/components/submit-button";
+import { useSearchParams } from "next/navigation";
 
-export function SignupForm() {
+export function LoginForm() {
   const [state, action] = useActionState(login, undefined);
+  const searchParams = useSearchParams();
+  const redirectTo = searchParams.get("redirectTo");
 
   return (
     <form action={action}>
@@ -14,21 +17,15 @@ export function SignupForm() {
         <input id="email" name="email" placeholder="Email" />
       </div>
       {state?.errors?.email && <p>{state.errors.email}</p>}
+      {redirectTo && (
+        <input name="redirectTo" type="hidden" value={redirectTo} />
+      )}
 
       <div>
         <label htmlFor="password">Password</label>
         <input id="password" name="password" type="password" />
       </div>
-      {state?.errors?.password && (
-        <div>
-          <p>Password must:</p>
-          <ul>
-            {state.errors.password.map((error) => (
-              <li key={error}>- {error}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {state?.errors?.password && <p>{state.errors.password}</p>}
       <SubmitButton />
     </form>
   );

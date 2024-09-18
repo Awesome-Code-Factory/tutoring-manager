@@ -1,18 +1,32 @@
+import "server-only";
 import { authConfig } from "@/config/auth";
 import { getConfig } from "@/config/getter";
 import type { UserId } from "@/db/schema";
 import { InternalServerError } from "@/errors/server";
 import { Unauthorized } from "@/errors/unauthorized";
 import { SignJWT, jwtVerify } from "jose";
-import { err, ok, ResultAsync } from "neverthrow";
+import { err, ok, Result, ResultAsync } from "neverthrow";
 import { cookies } from "next/headers";
 import { z } from "zod";
 
-const configResult = getConfig(authConfig);
-if (configResult.isErr()) throw configResult.error;
+const getEncodedKey = Result.fromThrowable(
+  () => {
+    const configResult = getConfig(authConfig);
+    if (configResult.isErr()) throw configResult.error;
 
-const { sessionSecret } = configResult.value;
-const encodedKey = new TextEncoder().encode(sessionSecret);
+    const { sessionSecret } = configResult.value;
+    return new TextEncoder().encode(sessionSecret);
+  },
+  (e) => {
+    if (e instanceof InternalServerError) return e;
+    if (e instanceof Error) {
+      const error = new InternalServerError(e.message);
+      error.cause = e;
+      return error;
+    }
+    return new InternalServerError("Unknown Error");
+  },
+);
 
 const payloadSchema = z.object({
   userId: z.number(),
@@ -20,7 +34,7 @@ const payloadSchema = z.object({
 });
 
 const safeJwtVerify = ResultAsync.fromThrowable(
-  (session: string) =>
+  (session: string, encodedKey) =>
     jwtVerify(session, encodedKey, {
       algorithms: ["HS256"],
     }),
@@ -34,18 +48,24 @@ const safeJwtVerify = ResultAsync.fromThrowable(
   },
 );
 
-async function encrypt(payload: { userId: UserId; expiresAt: number }) {
-  return ok(
-    await new SignJWT(payload)
-      .setProtectedHeader({ alg: "HS256" })
-      .setIssuedAt()
-      .setExpirationTime("7d")
-      .sign(encodedKey),
-  );
+export async function encrypt(payload: { userId: UserId; expiresAt: number }) {
+  const encodedKeyResult = getEncodedKey();
+  if (encodedKeyResult.isErr()) return err(encodedKeyResult.error);
+
+  const encrypted = await new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("7d")
+    .sign(encodedKeyResult.value);
+
+  return ok(encrypted);
 }
 
 export async function decrypt(session: string | undefined = "") {
-  const verifyResult = await safeJwtVerify(session);
+  const encodedKeyResult = getEncodedKey();
+  if (encodedKeyResult.isErr()) return err(encodedKeyResult.error);
+
+  const verifyResult = await safeJwtVerify(session, encodedKeyResult.value);
   if (verifyResult.isErr()) {
     return err(verifyResult.error);
   }
@@ -71,15 +91,10 @@ export async function decrypt(session: string | undefined = "") {
 
 export async function createSession(userId: UserId) {
   const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000;
-  const tokenResult = await encrypt({ userId, expiresAt });
+  const session = await encrypt({ userId, expiresAt });
+  if (session.isErr()) return err(session.error);
 
-  if (tokenResult.isErr()) {
-    return err(tokenResult.error);
-  }
-
-  const { value: session } = tokenResult;
-
-  cookies().set("session", session, {
+  cookies().set("session", session.value, {
     httpOnly: true,
     secure: true,
     expires: expiresAt,

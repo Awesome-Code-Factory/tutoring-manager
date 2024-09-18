@@ -13,9 +13,15 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { useTheme } from "next-themes";
-import { toast } from "sonner";
+import { usePathname, useRouter } from "next/navigation";
+import { useMutation } from "@tanstack/react-query";
+import { logout as logoutAction } from "@/auth/logout";
 
 export const UserButton = () => {
+  const logout = useMutation({
+    mutationFn: logoutAction,
+  });
+  const pathname = usePathname().replace("/", "");
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="absolute right-5 top-5">
@@ -26,7 +32,10 @@ export const UserButton = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
         <ThemeSwitchMenu />
-        <DropdownMenuItem onClick={() => toast.error("You can't log out, LOL")}>
+        <DropdownMenuItem
+          disabled={logout.isPending}
+          onClick={() => logout.mutate(pathname)}
+        >
           <LogOut className="mr-2 h-4 w-4" />
           Log out
         </DropdownMenuItem>

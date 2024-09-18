@@ -1,9 +1,21 @@
-import NextAuth from "next-auth";
-import { authConfig } from "./auth/auth.config";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
+import { verifySession } from "./auth/verifySession";
 
-export default NextAuth(authConfig).auth;
+export async function middleware(request: NextRequest) {
+  if (request.nextUrl.pathname.startsWith("/_next")) {
+    return NextResponse.next();
+  }
+  const pathname = request.nextUrl.pathname;
+  const redirectTo = request.nextUrl.searchParams.get("redirectTo");
+  const { userId } = await verifySession();
+  const loginUrl = new URL("/login", request.url);
+  loginUrl.searchParams.append("redirectTo", pathname);
 
-export const config = {
-  // https://nextjs.org/docs/app/building-your-application/routing/middleware#matcher
-  matcher: ["/((?!api|_next/static|_next/image|.*\\.png$).*)"],
-};
+  if (userId === null && pathname !== "/login")
+    return NextResponse.redirect(loginUrl);
+  if (userId !== null && pathname === "/login")
+    return NextResponse.redirect(
+      new URL(`/${redirectTo?.replace("/", "") ?? ""}`, request.url),
+    );
+}

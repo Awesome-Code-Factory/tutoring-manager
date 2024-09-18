@@ -6,6 +6,7 @@ import tsParser from "@typescript-eslint/parser";
 import js from "@eslint/js";
 import prettierEslintConfig from "eslint-config-prettier";
 import tseslint from "typescript-eslint";
+import reactQueryPlugin from "@tanstack/eslint-plugin-query";
 
 import { includeIgnoreFile } from "@eslint/compat";
 import path from "node:path";
@@ -21,6 +22,7 @@ export default [
   ...tseslint.configs.strict,
   reactPlugin.configs.flat.recommended,
   reactPlugin.configs.flat["jsx-runtime"],
+  reactQueryPlugin.configs["flat/recommended"],
 
   {
     plugins: {

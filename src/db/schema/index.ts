@@ -1,5 +1,6 @@
 import type { HashedPassword } from "@/auth/user";
 import type { Brand } from "@/type-utils/brand";
+import type { StrictOmit } from "@/type-utils/strict-omit";
 import { boolean, pgTable, serial, varchar } from "drizzle-orm/pg-core";
 
 export type UserId = Brand<number, "userId">;
@@ -16,3 +17,5 @@ export const users = pgTable("users", {
   photoUrl: varchar("photo_url", { length: 200 }),
   color: varchar("color", { length: 6 }).notNull(),
 });
+
+export type User = StrictOmit<typeof users.$inferSelect, "hashedPassword">;

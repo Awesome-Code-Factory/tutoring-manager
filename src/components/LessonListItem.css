@@ -1,0 +1,30 @@
+.lesson_list_item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  margin: auto;
+  padding: 20px 20px;
+  max-width: 500px;
+  height: 60px;
+  background-color: white;
+  color: black;
+  border: 2px dashed black;
+  border-radius: 8px;
+}
+
+.subject {
+  width: 100px;
+}
+.duration {
+  width: 100px;
+}
+.date {
+  width: 200px;
+}
+
+.finished {
+  background-color: rgb(4, 116, 0);
+  border: 2px solid black;
+  color: white;
+}

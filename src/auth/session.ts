@@ -6,7 +6,6 @@ import { InternalServerError } from "@/errors/server";
 import { Unauthorized } from "@/errors/unauthorized";
 import { SignJWT, jwtVerify } from "jose";
 import { err, ok, Result, ResultAsync } from "neverthrow";
-import { cookies } from "next/headers";
 import { z } from "zod";
 
 const getEncodedKey = Result.fromThrowable(
@@ -93,13 +92,15 @@ export async function createSession(userId: UserId) {
   const expiresAt = Date.now() + 7 * 24 * 60 * 60 * 1000;
   const session = await encrypt({ userId, expiresAt });
   if (session.isErr()) return err(session.error);
-
-  cookies().set("session", session.value, {
-    httpOnly: true,
-    secure: true,
-    expires: expiresAt,
-    sameSite: "lax",
-    path: "/",
-  });
-  return ok("session created!" as const);
+  return ok([
+    "session",
+    session.value,
+    {
+      httpOnly: true,
+      secure: true,
+      expires: expiresAt,
+      sameSite: "lax",
+      path: "/",
+    },
+  ] as const);
 }

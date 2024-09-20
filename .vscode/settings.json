@@ -7,5 +7,7 @@
   "vitest.rootConfig": "vitest.config.ts",
   "vitest.nodeEnv": {
     "NODE_ENV": "test"
-  }
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false
 }

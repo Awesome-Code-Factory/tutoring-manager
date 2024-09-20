@@ -22,7 +22,7 @@ export default [
   ...tseslint.configs.strict,
   reactPlugin.configs.flat.recommended,
   reactPlugin.configs.flat["jsx-runtime"],
-  reactQueryPlugin.configs["flat/recommended"],
+  ...reactQueryPlugin.configs["flat/recommended"],
 
   {
     plugins: {

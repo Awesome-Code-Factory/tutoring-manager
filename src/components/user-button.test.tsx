@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import * as navigation from "next/navigation";
 
-import { UserButton } from "@/components/user-button";
+import { UserButton } from "./user-button";
 
 const mockSetTheme = vi.fn();
 
@@ -13,6 +14,11 @@ vi.mock("next-themes", () => {
     })),
   };
 });
+
+vi.mock("next/navigation", () => ({
+  redirect: vi.fn(),
+}));
+
 describe("<UserButton />", () => {
   beforeEach(() => {
     vi.clearAllMocks();
@@ -63,4 +69,17 @@ describe("<UserButton />", () => {
       });
     },
   );
+
+  test("loggs the user out, when clicked option", async () => {
+    const user = userEvent.setup();
+    const redirect = vi.spyOn(navigation, "redirect");
+    render(<UserButton />);
+
+    const logOutButton = screen.getByRole("menuitem", { name: /log out/i });
+    expect(logOutButton).toBeInTheDocument();
+
+    await user.click(logOutButton);
+
+    expect(redirect).toHaveBeenCalled();
+  });
 });

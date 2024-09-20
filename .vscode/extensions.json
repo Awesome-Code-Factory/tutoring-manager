@@ -8,6 +8,7 @@
     "eamodio.gitlens",
     "github.vscode-pull-request-github",
     "aeschli.vscode-css-formatter",
-    "oven.bun-vscode"
+    "oven.bun-vscode",
+    "vscode-icons-team.vscode-icons"
   ]
 }

@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { useTheme } from "next-themes";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
 import { logout as logoutAction } from "@/auth/logout";
 

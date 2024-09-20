@@ -11,6 +11,7 @@ import { eq } from "drizzle-orm";
 import { users } from "@/db/schema";
 import { InternalServerError } from "@/errors/server";
 import { NotFound } from "@/errors/not-found";
+import { cookies } from "next/headers";
 
 export async function login(state: FormState, formData: FormData) {
   const loginResult = await tryLogin(formData);
@@ -37,8 +38,11 @@ export async function login(state: FormState, formData: FormData) {
 
     throw error;
   }
+
+  cookies().set(...loginResult.value);
+
   const redirectTo = formData.get("redirectTo") as string;
-  console.log("REDIRECT", redirectTo);
+
   if (redirectTo) redirect(redirectTo);
 
   redirect("/dashboard");
@@ -63,16 +67,16 @@ async function tryLogin(formData: FormData) {
   }
   const { value: user } = userResult;
 
-  if (!(await comparePasswords(password, user.hashedPassword))) {
+  const isPasswordCorrect = await comparePasswords(
+    password,
+    user.hashedPassword,
+  );
+
+  if (!isPasswordCorrect) {
     return err(new Unauthorized("Wrong password"));
   }
 
-  const sessionResult = await createSession(user.id);
-  if (sessionResult.isErr()) {
-    return err(sessionResult.error);
-  }
-
-  return ok("user logged in!" as const);
+  return createSession(user.id);
 }
 
 async function getUser(email: string) {
